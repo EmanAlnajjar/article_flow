@@ -7,11 +7,7 @@ class ArticleCard extends StatelessWidget {
   final ArticleEntity article;
   final VoidCallback onTap;
 
-  const ArticleCard({
-    super.key,
-    required this.article,
-    required this.onTap,
-  });
+  const ArticleCard({super.key, required this.article, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -25,9 +21,7 @@ class ArticleCard extends StatelessWidget {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20),
         side: BorderSide(
-          color: colorScheme.outlineVariant.withValues(
-            alpha: 0.5,
-          ),
+          color: colorScheme.outlineVariant.withValues(alpha: 0.5),
         ),
       ),
       child: InkWell(
@@ -73,10 +67,7 @@ class ArticleCard extends StatelessWidget {
                     article.title,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
-                    style: Theme.of(context)
-                        .textTheme
-                        .titleLarge
-                        ?.copyWith(
+                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
                       fontWeight: FontWeight.w700,
                       height: 1.3,
                     ),
@@ -86,10 +77,7 @@ class ArticleCard extends StatelessWidget {
                     article.body,
                     maxLines: 3,
                     overflow: TextOverflow.ellipsis,
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodyMedium
-                        ?.copyWith(
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                       color: colorScheme.onSurfaceVariant,
                       height: 1.5,
                     ),
@@ -99,15 +87,15 @@ class ArticleCard extends StatelessWidget {
                     Wrap(
                       spacing: 8,
                       runSpacing: 8,
-                      children: article.tags.map((tag) {
-                        return Chip(
-                          label: Text('#$tag'),
-                          visualDensity: VisualDensity.compact,
-                          side: BorderSide.none,
-                          backgroundColor:
-                          colorScheme.primaryContainer,
-                        );
-                      }).toList(),
+                      children:
+                          article.tags.map((tag) {
+                            return Chip(
+                              label: Text('#$tag'),
+                              visualDensity: VisualDensity.compact,
+                              side: BorderSide.none,
+                              backgroundColor: colorScheme.primaryContainer,
+                            );
+                          }).toList(),
                     ),
                   ],
                   const SizedBox(height: 16),
@@ -143,15 +131,11 @@ class _ArticleInfo extends StatelessWidget {
   final IconData icon;
   final String value;
 
-  const _ArticleInfo({
-    required this.icon,
-    required this.value,
-  });
+  const _ArticleInfo({required this.icon, required this.value});
 
   @override
   Widget build(BuildContext context) {
-    final color =
-        Theme.of(context).colorScheme.onSurfaceVariant;
+    final color = Theme.of(context).colorScheme.onSurfaceVariant;
 
     return Row(
       mainAxisSize: MainAxisSize.min,
@@ -160,10 +144,7 @@ class _ArticleInfo extends StatelessWidget {
         const SizedBox(width: 6),
         Text(
           value,
-          style: Theme.of(context)
-              .textTheme
-              .labelLarge
-              ?.copyWith(color: color),
+          style: Theme.of(context).textTheme.labelLarge?.copyWith(color: color),
         ),
       ],
     );

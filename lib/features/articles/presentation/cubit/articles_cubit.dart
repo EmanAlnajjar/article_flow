@@ -22,9 +22,9 @@ class ArticlesCubit extends Cubit<ArticlesState> {
   ArticlesCubit({
     required GetArticlesUseCase getArticlesUseCase,
     required SearchArticlesUseCase searchArticlesUseCase,
-  })  : _getArticlesUseCase = getArticlesUseCase,
-        _searchArticlesUseCase = searchArticlesUseCase,
-        super(const ArticlesState());
+  }) : _getArticlesUseCase = getArticlesUseCase,
+       _searchArticlesUseCase = searchArticlesUseCase,
+       super(const ArticlesState());
 
   Future<void> loadArticles() {
     return _loadFirstPage(query: '');
@@ -35,24 +35,14 @@ class ArticlesCubit extends Cubit<ArticlesState> {
 
     _searchDebounce?.cancel();
 
-    emit(
-      state.copyWith(
-        query: query,
-        clearError: true,
-      ),
-    );
+    emit(state.copyWith(query: query, clearError: true));
 
-    _searchDebounce = Timer(
-      const Duration(milliseconds: 500),
-          () {
-        _loadFirstPage(query: query);
-      },
-    );
+    _searchDebounce = Timer(const Duration(milliseconds: 500), () {
+      _loadFirstPage(query: query);
+    });
   }
 
-  Future<void> _loadFirstPage({
-    required String query,
-  }) async {
+  Future<void> _loadFirstPage({required String query}) async {
     final currentRequestId = ++_requestId;
 
     emit(
@@ -67,10 +57,7 @@ class ArticlesCubit extends Cubit<ArticlesState> {
     );
 
     try {
-      final page = await _requestPage(
-        query: query,
-        skip: 0,
-      );
+      final page = await _requestPage(query: query, skip: 0);
 
       if (currentRequestId != _requestId || isClosed) {
         return;
@@ -111,12 +98,7 @@ class ArticlesCubit extends Cubit<ArticlesState> {
     final currentRequestId = _requestId;
     final currentQuery = state.query;
 
-    emit(
-      state.copyWith(
-        isLoadingMore: true,
-        clearError: true,
-      ),
-    );
+    emit(state.copyWith(isLoadingMore: true, clearError: true));
 
     try {
       final page = await _requestPage(
@@ -161,25 +143,16 @@ class ArticlesCubit extends Cubit<ArticlesState> {
   }) {
     if (query.isEmpty) {
       return _getArticlesUseCase(
-        PaginationParams(
-          limit: _pageSize,
-          skip: skip,
-        ),
+        PaginationParams(limit: _pageSize, skip: skip),
       );
     }
 
     return _searchArticlesUseCase(
-      SearchArticlesParams(
-        query: query,
-        limit: _pageSize,
-        skip: skip,
-      ),
+      SearchArticlesParams(query: query, limit: _pageSize, skip: skip),
     );
   }
 
-  List<ArticleEntity> _removeDuplicates(
-      List<ArticleEntity> articles,
-      ) {
+  List<ArticleEntity> _removeDuplicates(List<ArticleEntity> articles) {
     final uniqueArticles = <int, ArticleEntity>{};
 
     for (final article in articles) {

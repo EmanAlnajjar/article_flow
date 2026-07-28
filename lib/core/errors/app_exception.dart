@@ -7,3 +7,7 @@ class AppException implements Exception {
   @override
   String toString() => message;
 }
+
+class CacheException extends AppException {
+  const CacheException({required super.message});
+}

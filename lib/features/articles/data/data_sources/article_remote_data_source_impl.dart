@@ -6,7 +6,8 @@ import 'article_remote_data_source.dart';
 class ArticleRemoteDataSourceImpl implements ArticleRemoteDataSource {
   final ApiClient _apiClient;
 
-  const ArticleRemoteDataSourceImpl(this._apiClient);
+  const ArticleRemoteDataSourceImpl({required ApiClient apiClient})
+    : _apiClient = apiClient;
 
   @override
   Future<ArticlePageModel> getArticles({

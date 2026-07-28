@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import 'core/database/hive_service.dart';
 import 'core/di/app_dependencies.dart';
 import 'core/routing/app_router.dart';
 import 'core/theme/app_theme.dart';
@@ -8,24 +9,19 @@ import 'core/theme/app_theme.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  await HiveService.initialize();
+
   final dependencies = AppDependencies.create();
 
-  final router = AppRouter.create(
-    dependencies: dependencies,
-  );
+  final router = AppRouter.create(dependencies: dependencies);
 
-  runApp(
-    MyApp(router: router),
-  );
+  runApp(MyApp(router: router));
 }
 
 class MyApp extends StatelessWidget {
   final GoRouter router;
 
-  const MyApp({
-    super.key,
-    required this.router,
-  });
+  const MyApp({super.key, required this.router});
 
   @override
   Widget build(BuildContext context) {

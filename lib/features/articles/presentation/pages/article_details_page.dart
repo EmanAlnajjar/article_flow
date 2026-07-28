@@ -6,10 +6,7 @@ import '../../domain/entities/article_entity.dart';
 class ArticleDetailsPage extends StatelessWidget {
   final ArticleEntity article;
 
-  const ArticleDetailsPage({
-    super.key,
-    required this.article,
-  });
+  const ArticleDetailsPage({super.key, required this.article});
 
   @override
   Widget build(BuildContext context) {
@@ -37,10 +34,7 @@ class ArticleDetailsPage extends StatelessWidget {
                     return Container(
                       color: colorScheme.surfaceContainerHighest,
                       alignment: Alignment.center,
-                      child: const Icon(
-                        Icons.broken_image_outlined,
-                        size: 64,
-                      ),
+                      child: const Icon(Icons.broken_image_outlined, size: 64),
                     );
                   },
                 ),
@@ -49,21 +43,13 @@ class ArticleDetailsPage extends StatelessWidget {
           ),
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.fromLTRB(
-                20,
-                24,
-                20,
-                40,
-              ),
+              padding: const EdgeInsets.fromLTRB(20, 24, 20, 40),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     article.title,
-                    style: Theme.of(context)
-                        .textTheme
-                        .headlineSmall
-                        ?.copyWith(
+                    style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                       fontWeight: FontWeight.w800,
                       height: 1.3,
                     ),
@@ -92,37 +78,29 @@ class ArticleDetailsPage extends StatelessWidget {
                     Wrap(
                       spacing: 8,
                       runSpacing: 8,
-                      children: article.tags.map((tag) {
-                        return Chip(
-                          label: Text('#$tag'),
-                          side: BorderSide.none,
-                          backgroundColor:
-                          colorScheme.primaryContainer,
-                        );
-                      }).toList(),
+                      children:
+                          article.tags.map((tag) {
+                            return Chip(
+                              label: Text('#$tag'),
+                              side: BorderSide.none,
+                              backgroundColor: colorScheme.primaryContainer,
+                            );
+                          }).toList(),
                     ),
                   ],
                   const SizedBox(height: 24),
-                  Divider(
-                    color: colorScheme.outlineVariant,
-                  ),
+                  Divider(color: colorScheme.outlineVariant),
                   const SizedBox(height: 20),
                   Text(
                     'About this article',
-                    style: Theme.of(context)
-                        .textTheme
-                        .titleLarge
-                        ?.copyWith(
+                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                   const SizedBox(height: 12),
                   Text(
                     article.body,
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodyLarge
-                        ?.copyWith(
+                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                       height: 1.7,
                       color: colorScheme.onSurfaceVariant,
                     ),
@@ -141,15 +119,11 @@ class _DetailsInfo extends StatelessWidget {
   final IconData icon;
   final String label;
 
-  const _DetailsInfo({
-    required this.icon,
-    required this.label,
-  });
+  const _DetailsInfo({required this.icon, required this.label});
 
   @override
   Widget build(BuildContext context) {
-    final color =
-        Theme.of(context).colorScheme.onSurfaceVariant;
+    final color = Theme.of(context).colorScheme.onSurfaceVariant;
 
     return Row(
       mainAxisSize: MainAxisSize.min,
@@ -158,10 +132,9 @@ class _DetailsInfo extends StatelessWidget {
         const SizedBox(width: 6),
         Text(
           label,
-          style: Theme.of(context)
-              .textTheme
-              .labelMedium
-              ?.copyWith(color: color),
+          style: Theme.of(
+            context,
+          ).textTheme.labelMedium?.copyWith(color: color),
         ),
       ],
     );

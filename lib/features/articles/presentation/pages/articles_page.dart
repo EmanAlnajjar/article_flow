@@ -22,8 +22,7 @@ class _ArticlesPageState extends State<ArticlesPage> {
   void initState() {
     super.initState();
 
-    _scrollController = ScrollController()
-      ..addListener(_onScroll);
+    _scrollController = ScrollController()..addListener(_onScroll);
 
     _searchController = TextEditingController();
   }
@@ -54,12 +53,8 @@ class _ArticlesPageState extends State<ArticlesPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor:
-      Theme.of(context).colorScheme.surfaceContainerLowest,
-      appBar: AppBar(
-        title: const Text('ArticleFlow'),
-        centerTitle: false,
-      ),
+      backgroundColor: Theme.of(context).colorScheme.surfaceContainerLowest,
+      appBar: AppBar(title: const Text('ArticleFlow'), centerTitle: false),
       body: SafeArea(
         child: Column(
           children: [
@@ -67,8 +62,7 @@ class _ArticlesPageState extends State<ArticlesPage> {
             Expanded(
               child: BlocConsumer<ArticlesCubit, ArticlesState>(
                 listenWhen: (previous, current) {
-                  return previous.errorMessage !=
-                      current.errorMessage &&
+                  return previous.errorMessage != current.errorMessage &&
                       current.errorMessage != null &&
                       current.articles.isNotEmpty;
                 },
@@ -76,84 +70,62 @@ class _ArticlesPageState extends State<ArticlesPage> {
                   ScaffoldMessenger.of(context)
                     ..hideCurrentSnackBar()
                     ..showSnackBar(
-                      SnackBar(
-                        content: Text(state.errorMessage!),
-                      ),
+                      SnackBar(content: Text(state.errorMessage!)),
                     );
                 },
                 builder: (context, state) {
                   return switch (state.status) {
-                    ArticlesStatus.initial ||
-                    ArticlesStatus.loading =>
-                    const Center(
-                      child: CircularProgressIndicator(),
-                    ),
-                    ArticlesStatus.failure =>
-                        _ErrorView(
-                          message: state.errorMessage ??
-                              'Failed to load articles.',
-                          onRetry: () {
-                            context
-                                .read<ArticlesCubit>()
-                                .loadArticles();
-                          },
-                        ),
-                    ArticlesStatus.success =>
-                    state.articles.isEmpty
-                        ? const _EmptyView()
-                        : RefreshIndicator(
-                      onRefresh: () {
-                        return context
-                            .read<ArticlesCubit>()
-                            .loadArticles();
+                    ArticlesStatus.initial || ArticlesStatus.loading =>
+                      const Center(child: CircularProgressIndicator()),
+                    ArticlesStatus.failure => _ErrorView(
+                      message: state.errorMessage ?? 'Failed to load articles.',
+                      onRetry: () {
+                        context.read<ArticlesCubit>().loadArticles();
                       },
-                      child: ListView.separated(
-                        controller: _scrollController,
-                        physics:
-                        const AlwaysScrollableScrollPhysics(),
-                        padding: const EdgeInsets.fromLTRB(
-                          16,
-                          8,
-                          16,
-                          24,
-                        ),
-                        itemCount:
-                        state.articles.length +
-                            (state.isLoadingMore
-                                ? 1
-                                : 0),
-                        separatorBuilder: (_, __) {
-                          return const SizedBox(
-                            height: 14,
-                          );
-                        },
-                        itemBuilder: (context, index) {
-                          if (index ==
-                              state.articles.length) {
-                            return const Padding(
-                              padding:
-                              EdgeInsets.all(20),
-                              child: Center(
-                                child:
-                                CircularProgressIndicator(),
-                              ),
-                            );
-                          }
-
-                          final article = state.articles[index];
-
-                          return ArticleCard(
-                            article: article,
-                            onTap: () {
-                              context.pushNamed(
-                                AppRouter.articleDetailsName,
-                                extra: article,
-                              );
-                            },
-                          );
-                        },
-                      ),
                     ),
+                    ArticlesStatus.success =>
+                      state.articles.isEmpty
+                          ? const _EmptyView()
+                          : RefreshIndicator(
+                            onRefresh: () {
+                              return context
+                                  .read<ArticlesCubit>()
+                                  .loadArticles();
+                            },
+                            child: ListView.separated(
+                              controller: _scrollController,
+                              physics: const AlwaysScrollableScrollPhysics(),
+                              padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
+                              itemCount:
+                                  state.articles.length +
+                                  (state.isLoadingMore ? 1 : 0),
+                              separatorBuilder: (_, __) {
+                                return const SizedBox(height: 14);
+                              },
+                              itemBuilder: (context, index) {
+                                if (index == state.articles.length) {
+                                  return const Padding(
+                                    padding: EdgeInsets.all(20),
+                                    child: Center(
+                                      child: CircularProgressIndicator(),
+                                    ),
+                                  );
+                                }
+
+                                final article = state.articles[index];
+
+                                return ArticleCard(
+                                  article: article,
+                                  onTap: () {
+                                    context.pushNamed(
+                                      AppRouter.articleDetailsName,
+                                      extra: article,
+                                    );
+                                  },
+                                );
+                              },
+                            ),
+                          ),
                   };
                 },
               ),
@@ -200,10 +172,7 @@ class _ErrorView extends StatelessWidget {
   final String message;
   final VoidCallback onRetry;
 
-  const _ErrorView({
-    required this.message,
-    required this.onRetry,
-  });
+  const _ErrorView({required this.message, required this.onRetry});
 
   @override
   Widget build(BuildContext context) {
@@ -248,15 +217,9 @@ class _EmptyView extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(
-              Icons.search_off_rounded,
-              size: 72,
-            ),
+            Icon(Icons.search_off_rounded, size: 72),
             SizedBox(height: 18),
-            Text(
-              'No articles found.',
-              textAlign: TextAlign.center,
-            ),
+            Text('No articles found.', textAlign: TextAlign.center),
           ],
         ),
       ),
