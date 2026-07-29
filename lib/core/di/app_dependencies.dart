@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 
+import '../ network/network_info.dart';
 import '../../features/articles/data/data_sources/article_local_data_source.dart';
 import '../../features/articles/data/data_sources/article_local_data_source_impl.dart';
 import '../../features/articles/data/data_sources/article_remote_data_source.dart';
@@ -12,9 +13,11 @@ import '../../features/articles/presentation/cubit/articles_cubit.dart';
 import '../api/api_client.dart';
 import '../database/hive_service.dart';
 
+
 class AppDependencies {
   final Dio dio;
   final ApiClient apiClient;
+  final NetworkInfo networkInfo;
 
   final ArticleRemoteDataSource remoteDataSource;
   final ArticleLocalDataSource localDataSource;
@@ -26,6 +29,7 @@ class AppDependencies {
   AppDependencies._({
     required this.dio,
     required this.apiClient,
+    required this.networkInfo,
     required this.remoteDataSource,
     required this.localDataSource,
     required this.articleRepository,
@@ -38,7 +42,11 @@ class AppDependencies {
 
     final apiClient = ApiClient(dio);
 
-    final remoteDataSource = ArticleRemoteDataSourceImpl(apiClient: apiClient);
+    final networkInfo = NetworkInfoImpl();
+
+    final remoteDataSource = ArticleRemoteDataSourceImpl(
+      apiClient: apiClient,
+    );
 
     final localDataSource = ArticleLocalDataSourceImpl(
       articlesBox: HiveService.articlesBox,
@@ -50,13 +58,18 @@ class AppDependencies {
       localDataSource: localDataSource,
     );
 
-    final getArticlesUseCase = GetArticlesUseCase(articleRepository);
+    final getArticlesUseCase = GetArticlesUseCase(
+      articleRepository,
+    );
 
-    final searchArticlesUseCase = SearchArticlesUseCase(articleRepository);
+    final searchArticlesUseCase = SearchArticlesUseCase(
+      articleRepository,
+    );
 
     return AppDependencies._(
       dio: dio,
       apiClient: apiClient,
+      networkInfo: networkInfo,
       remoteDataSource: remoteDataSource,
       localDataSource: localDataSource,
       articleRepository: articleRepository,
@@ -69,6 +82,7 @@ class AppDependencies {
     return ArticlesCubit(
       getArticlesUseCase: getArticlesUseCase,
       searchArticlesUseCase: searchArticlesUseCase,
+      networkInfo: networkInfo,
     );
   }
 }

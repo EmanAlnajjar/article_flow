@@ -59,6 +59,7 @@ class _ArticlesPageState extends State<ArticlesPage> {
         child: Column(
           children: [
             _buildSearchField(),
+            const _OfflineBanner(),
             Expanded(
               child: BlocConsumer<ArticlesCubit, ArticlesState>(
                 listenWhen: (previous, current) {
@@ -164,6 +165,56 @@ class _ArticlesPageState extends State<ArticlesPage> {
           ),
         ),
       ),
+    );
+  }
+}class _OfflineBanner extends StatelessWidget {
+  const _OfflineBanner();
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocSelector<ArticlesCubit, ArticlesState, bool>(
+      selector: (state) => state.isOffline,
+      builder: (context, isOffline) {
+        return AnimatedContainer(
+          duration: const Duration(milliseconds: 250),
+          width: double.infinity,
+          height: isOffline ? 44 : 0,
+          color: Theme.of(context)
+              .colorScheme
+              .tertiaryContainer,
+          alignment: Alignment.center,
+          child: isOffline
+              ? Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.cloud_off_rounded,
+                size: 18,
+                color: Theme.of(context)
+                    .colorScheme
+                    .onTertiaryContainer,
+              ),
+              const SizedBox(width: 8),
+              Flexible(
+                child: Text(
+                  'You are offline. Showing saved articles.',
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: Theme.of(context)
+                      .textTheme
+                      .labelMedium
+                      ?.copyWith(
+                    color: Theme.of(context)
+                        .colorScheme
+                        .onTertiaryContainer,
+                  ),
+                ),
+              ),
+            ],
+          )
+              : const SizedBox.shrink(),
+        );
+      },
     );
   }
 }

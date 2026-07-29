@@ -2,7 +2,9 @@ import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../core/ network/network_info.dart';
 import '../../../../core/errors/app_exception.dart';
+
 import '../../domain/entities/article_entity.dart';
 import '../../domain/entities/article_page_entity.dart';
 import '../../domain/use_cases/article_params.dart';
@@ -13,18 +15,25 @@ import 'articles_state.dart';
 class ArticlesCubit extends Cubit<ArticlesState> {
   final GetArticlesUseCase _getArticlesUseCase;
   final SearchArticlesUseCase _searchArticlesUseCase;
+  final NetworkInfo _networkInfo;
 
   static const int _pageSize = 10;
 
   Timer? _searchDebounce;
+  StreamSubscription<bool>? _connectionSubscription;
+
   int _requestId = 0;
 
   ArticlesCubit({
     required GetArticlesUseCase getArticlesUseCase,
     required SearchArticlesUseCase searchArticlesUseCase,
-  }) : _getArticlesUseCase = getArticlesUseCase,
-       _searchArticlesUseCase = searchArticlesUseCase,
-       super(const ArticlesState());
+    required NetworkInfo networkInfo,
+  })  : _getArticlesUseCase = getArticlesUseCase,
+        _searchArticlesUseCase = searchArticlesUseCase,
+        _networkInfo = networkInfo,
+        super(const ArticlesState()) {
+    unawaited(_monitorConnection());
+  }
 
   Future<void> loadArticles() {
     return _loadFirstPage(query: '');
@@ -35,14 +44,26 @@ class ArticlesCubit extends Cubit<ArticlesState> {
 
     _searchDebounce?.cancel();
 
-    emit(state.copyWith(query: query, clearError: true));
+    emit(
+      state.copyWith(
+        query: query,
+        clearError: true,
+      ),
+    );
 
-    _searchDebounce = Timer(const Duration(milliseconds: 500), () {
-      _loadFirstPage(query: query);
-    });
+    _searchDebounce = Timer(
+      const Duration(milliseconds: 500),
+          () {
+        unawaited(
+          _loadFirstPage(query: query),
+        );
+      },
+    );
   }
 
-  Future<void> _loadFirstPage({required String query}) async {
+  Future<void> _loadFirstPage({
+    required String query,
+  }) async {
     final currentRequestId = ++_requestId;
 
     emit(
@@ -57,7 +78,10 @@ class ArticlesCubit extends Cubit<ArticlesState> {
     );
 
     try {
-      final page = await _requestPage(query: query, skip: 0);
+      final page = await _requestPage(
+        query: query,
+        skip: 0,
+      );
 
       if (currentRequestId != _requestId || isClosed) {
         return;
@@ -97,13 +121,19 @@ class ArticlesCubit extends Cubit<ArticlesState> {
 
     final currentRequestId = _requestId;
     final currentQuery = state.query;
+    final currentArticles = state.articles;
 
-    emit(state.copyWith(isLoadingMore: true, clearError: true));
+    emit(
+      state.copyWith(
+        isLoadingMore: true,
+        clearError: true,
+      ),
+    );
 
     try {
       final page = await _requestPage(
         query: currentQuery,
-        skip: state.articles.length,
+        skip: currentArticles.length,
       );
 
       if (currentRequestId != _requestId || isClosed) {
@@ -111,7 +141,7 @@ class ArticlesCubit extends Cubit<ArticlesState> {
       }
 
       final updatedArticles = _removeDuplicates([
-        ...state.articles,
+        ...currentArticles,
         ...page.articles,
       ]);
 
@@ -143,16 +173,67 @@ class ArticlesCubit extends Cubit<ArticlesState> {
   }) {
     if (query.isEmpty) {
       return _getArticlesUseCase(
-        PaginationParams(limit: _pageSize, skip: skip),
+        PaginationParams(
+          limit: _pageSize,
+          skip: skip,
+        ),
       );
     }
 
     return _searchArticlesUseCase(
-      SearchArticlesParams(query: query, limit: _pageSize, skip: skip),
+      SearchArticlesParams(
+        query: query,
+        limit: _pageSize,
+        skip: skip,
+      ),
     );
   }
 
-  List<ArticleEntity> _removeDuplicates(List<ArticleEntity> articles) {
+  Future<void> _monitorConnection() async {
+    _connectionSubscription =
+        _networkInfo.onStatusChange.listen(
+          _handleConnectionChange,
+        );
+
+    final connected = await _networkInfo.isConnected;
+
+    if (isClosed) {
+      return;
+    }
+
+    emit(
+      state.copyWith(
+        isOffline: !connected,
+      ),
+    );
+  }
+
+  void _handleConnectionChange(bool connected) {
+    if (isClosed) {
+      return;
+    }
+
+    final wasOffline = state.isOffline;
+    final currentQuery = state.query;
+
+    emit(
+      state.copyWith(
+        isOffline: !connected,
+      ),
+    );
+
+    if (connected && wasOffline) {
+      unawaited(
+        _loadFirstPage(
+          query: currentQuery,
+        ),
+      );
+    }
+  }
+
+  List<ArticleEntity> _removeDuplicates(
+      List<ArticleEntity> articles,
+      ) {
     final uniqueArticles = <int, ArticleEntity>{};
 
     for (final article in articles) {
@@ -175,8 +256,10 @@ class ArticlesCubit extends Cubit<ArticlesState> {
   }
 
   @override
-  Future<void> close() {
+  Future<void> close() async {
     _searchDebounce?.cancel();
+    await _connectionSubscription?.cancel();
+
     return super.close();
   }
 }

@@ -2,13 +2,19 @@ import 'package:equatable/equatable.dart';
 
 import '../../domain/entities/article_entity.dart';
 
-enum ArticlesStatus { initial, loading, success, failure }
+enum ArticlesStatus {
+  initial,
+  loading,
+  success,
+  failure,
+}
 
 class ArticlesState extends Equatable {
   final ArticlesStatus status;
   final List<ArticleEntity> articles;
   final bool isLoadingMore;
   final bool hasMore;
+  final bool isOffline;
   final String query;
   final String? errorMessage;
 
@@ -17,6 +23,7 @@ class ArticlesState extends Equatable {
     this.articles = const [],
     this.isLoadingMore = false,
     this.hasMore = true,
+    this.isOffline = false,
     this.query = '',
     this.errorMessage,
   });
@@ -26,6 +33,7 @@ class ArticlesState extends Equatable {
     List<ArticleEntity>? articles,
     bool? isLoadingMore,
     bool? hasMore,
+    bool? isOffline,
     String? query,
     String? errorMessage,
     bool clearError = false,
@@ -35,8 +43,11 @@ class ArticlesState extends Equatable {
       articles: articles ?? this.articles,
       isLoadingMore: isLoadingMore ?? this.isLoadingMore,
       hasMore: hasMore ?? this.hasMore,
+      isOffline: isOffline ?? this.isOffline,
       query: query ?? this.query,
-      errorMessage: clearError ? null : errorMessage ?? this.errorMessage,
+      errorMessage: clearError
+          ? null
+          : errorMessage ?? this.errorMessage,
     );
   }
 
@@ -46,6 +57,7 @@ class ArticlesState extends Equatable {
     articles,
     isLoadingMore,
     hasMore,
+    isOffline,
     query,
     errorMessage,
   ];
