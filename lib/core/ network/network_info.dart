@@ -9,10 +9,8 @@ abstract interface class NetworkInfo {
 class NetworkInfoImpl implements NetworkInfo {
   final InternetConnection _internetConnection;
 
-  NetworkInfoImpl({
-    InternetConnection? internetConnection,
-  }) : _internetConnection =
-      internetConnection ?? InternetConnection();
+  NetworkInfoImpl({InternetConnection? internetConnection})
+    : _internetConnection = internetConnection ?? InternetConnection();
 
   @override
   Future<bool> get isConnected {
@@ -22,9 +20,7 @@ class NetworkInfoImpl implements NetworkInfo {
   @override
   Stream<bool> get onStatusChange {
     return _internetConnection.onStatusChange
-        .map(
-          (status) => status == InternetStatus.connected,
-    )
+        .map((status) => status == InternetStatus.connected)
         .distinct();
   }
 }

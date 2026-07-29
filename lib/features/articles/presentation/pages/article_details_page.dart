@@ -1,6 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../favorites/presentation/cubit/favorites_cubit.dart';
+import '../../../favorites/presentation/cubit/favorites_state.dart';
 import '../../domain/entities/article_entity.dart';
 
 class ArticleDetailsPage extends StatelessWidget {
@@ -19,6 +22,46 @@ class ArticleDetailsPage extends StatelessWidget {
             expandedHeight: 300,
             pinned: true,
             stretch: true,
+            actions: [
+              BlocBuilder<FavoritesCubit, FavoritesState>(
+                builder: (context, state) {
+                  final favorite = state.isFavorite(article.id);
+                  final processing = state.isProcessing(article.id);
+
+                  return IconButton.filledTonal(
+                    tooltip: favorite
+                        ? 'Remove from favorites'
+                        : 'Add to favorites',
+                    onPressed: processing
+                        ? null
+                        : () {
+                      context
+                          .read<FavoritesCubit>()
+                          .toggleFavorite(article);
+                    },
+                    icon: processing
+                        ? const SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                      ),
+                    )
+                        : Icon(
+                      favorite
+                          ? Icons.favorite_rounded
+                          : Icons.favorite_border_rounded,
+                      color: favorite
+                          ? Theme.of(context)
+                          .colorScheme
+                          .tertiary
+                          : null,
+                    ),
+                  );
+                },
+              ),
+              const SizedBox(width: 8),
+            ],
             flexibleSpace: FlexibleSpaceBar(
               background: Hero(
                 tag: 'article-image-${article.id}',

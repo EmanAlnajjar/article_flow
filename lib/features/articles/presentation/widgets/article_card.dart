@@ -6,8 +6,18 @@ import '../../domain/entities/article_entity.dart';
 class ArticleCard extends StatelessWidget {
   final ArticleEntity article;
   final VoidCallback onTap;
+  final bool isFavorite;
+  final bool isProcessing;
+  final VoidCallback onFavoriteToggle;
 
-  const ArticleCard({super.key, required this.article, required this.onTap});
+  const ArticleCard({
+    super.key,
+    required this.article,
+    required this.onTap,
+    required this.isFavorite,
+    required this.isProcessing,
+    required this.onFavoriteToggle,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -111,6 +121,32 @@ class ArticleCard extends StatelessWidget {
                         value: '${article.likes}',
                       ),
                       const Spacer(),
+                      IconButton(
+                        tooltip: isFavorite
+                            ? 'Remove from favorites'
+                            : 'Add to favorites',
+                        onPressed: isProcessing
+                            ? null
+                            : onFavoriteToggle,
+                        icon: isProcessing
+                            ? const SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                          ),
+                        )
+                            : Icon(
+                          isFavorite
+                              ? Icons.favorite_rounded
+                              : Icons.favorite_border_rounded,
+                          color: isFavorite
+                              ? colorScheme.tertiary
+                              : colorScheme.onSurfaceVariant,
+                        ),
+                      ),
+                      const SizedBox(width: 4),
+
                       Icon(
                         Icons.arrow_forward_rounded,
                         color: colorScheme.primary,

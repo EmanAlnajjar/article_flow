@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/routing/app_router.dart';
+import '../../../favorites/presentation/cubit/favorites_cubit.dart';
+import '../../../favorites/presentation/cubit/favorites_state.dart';
 import '../cubit/articles_cubit.dart';
 import '../cubit/articles_state.dart';
 import '../widgets/article_card.dart';
@@ -115,12 +117,31 @@ class _ArticlesPageState extends State<ArticlesPage> {
 
                                 final article = state.articles[index];
 
-                                return ArticleCard(
-                                  article: article,
-                                  onTap: () {
-                                    context.pushNamed(
-                                      AppRouter.articleDetailsName,
-                                      extra: article,
+                                return BlocBuilder<FavoritesCubit, FavoritesState>(
+                                  builder: (context, favoritesState) {
+                                    final isFavorite = favoritesState.isFavorite(
+                                      article.id,
+                                    );
+
+                                    final isProcessing = favoritesState.isProcessing(
+                                      article.id,
+                                    );
+
+                                    return ArticleCard(
+                                      article: article,
+                                      isFavorite: isFavorite,
+                                      isProcessing: isProcessing,
+                                      onFavoriteToggle: () {
+                                        context
+                                            .read<FavoritesCubit>()
+                                            .toggleFavorite(article);
+                                      },
+                                      onTap: () {
+                                        context.pushNamed(
+                                          AppRouter.articleDetailsName,
+                                          extra: article,
+                                        );
+                                      },
                                     );
                                   },
                                 );
@@ -167,7 +188,9 @@ class _ArticlesPageState extends State<ArticlesPage> {
       ),
     );
   }
-}class _OfflineBanner extends StatelessWidget {
+}
+
+class _OfflineBanner extends StatelessWidget {
   const _OfflineBanner();
 
   @override
@@ -179,40 +202,38 @@ class _ArticlesPageState extends State<ArticlesPage> {
           duration: const Duration(milliseconds: 250),
           width: double.infinity,
           height: isOffline ? 44 : 0,
-          color: Theme.of(context)
-              .colorScheme
-              .tertiaryContainer,
+          color: Theme.of(context).colorScheme.tertiaryContainer,
           alignment: Alignment.center,
-          child: isOffline
-              ? Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                Icons.cloud_off_rounded,
-                size: 18,
-                color: Theme.of(context)
-                    .colorScheme
-                    .onTertiaryContainer,
-              ),
-              const SizedBox(width: 8),
-              Flexible(
-                child: Text(
-                  'You are offline. Showing saved articles.',
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: Theme.of(context)
-                      .textTheme
-                      .labelMedium
-                      ?.copyWith(
-                    color: Theme.of(context)
-                        .colorScheme
-                        .onTertiaryContainer,
-                  ),
-                ),
-              ),
-            ],
-          )
-              : const SizedBox.shrink(),
+          child:
+              isOffline
+                  ? Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.cloud_off_rounded,
+                        size: 18,
+                        color:
+                            Theme.of(context).colorScheme.onTertiaryContainer,
+                      ),
+                      const SizedBox(width: 8),
+                      Flexible(
+                        child: Text(
+                          'You are offline. Showing saved articles.',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: Theme.of(
+                            context,
+                          ).textTheme.labelMedium?.copyWith(
+                            color:
+                                Theme.of(
+                                  context,
+                                ).colorScheme.onTertiaryContainer,
+                          ),
+                        ),
+                      ),
+                    ],
+                  )
+                  : const SizedBox.shrink(),
         );
       },
     );
