@@ -117,15 +117,16 @@ class _ArticlesPageState extends State<ArticlesPage> {
 
                                 final article = state.articles[index];
 
-                                return BlocBuilder<FavoritesCubit, FavoritesState>(
+                                return BlocBuilder<
+                                  FavoritesCubit,
+                                  FavoritesState
+                                >(
                                   builder: (context, favoritesState) {
-                                    final isFavorite = favoritesState.isFavorite(
-                                      article.id,
-                                    );
+                                    final isFavorite = favoritesState
+                                        .isFavorite(article.id);
 
-                                    final isProcessing = favoritesState.isProcessing(
-                                      article.id,
-                                    );
+                                    final isProcessing = favoritesState
+                                        .isProcessing(article.id);
 
                                     return ArticleCard(
                                       article: article,

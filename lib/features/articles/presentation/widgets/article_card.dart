@@ -122,28 +122,29 @@ class ArticleCard extends StatelessWidget {
                       ),
                       const Spacer(),
                       IconButton(
-                        tooltip: isFavorite
-                            ? 'Remove from favorites'
-                            : 'Add to favorites',
-                        onPressed: isProcessing
-                            ? null
-                            : onFavoriteToggle,
-                        icon: isProcessing
-                            ? const SizedBox(
-                          width: 20,
-                          height: 20,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                          ),
-                        )
-                            : Icon(
-                          isFavorite
-                              ? Icons.favorite_rounded
-                              : Icons.favorite_border_rounded,
-                          color: isFavorite
-                              ? colorScheme.tertiary
-                              : colorScheme.onSurfaceVariant,
-                        ),
+                        tooltip:
+                            isFavorite
+                                ? 'Remove from favorites'
+                                : 'Add to favorites',
+                        onPressed: isProcessing ? null : onFavoriteToggle,
+                        icon:
+                            isProcessing
+                                ? const SizedBox(
+                                  width: 20,
+                                  height: 20,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                  ),
+                                )
+                                : Icon(
+                                  isFavorite
+                                      ? Icons.favorite_rounded
+                                      : Icons.favorite_border_rounded,
+                                  color:
+                                      isFavorite
+                                          ? colorScheme.tertiary
+                                          : colorScheme.onSurfaceVariant,
+                                ),
                       ),
                       const SizedBox(width: 4),
 

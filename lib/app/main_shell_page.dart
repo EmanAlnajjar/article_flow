@@ -4,16 +4,12 @@ import 'package:go_router/go_router.dart';
 class MainShellPage extends StatelessWidget {
   final StatefulNavigationShell navigationShell;
 
-  const MainShellPage({
-    super.key,
-    required this.navigationShell,
-  });
+  const MainShellPage({super.key, required this.navigationShell});
 
   void _onDestinationSelected(int index) {
     navigationShell.goBranch(
       index,
-      initialLocation:
-      index == navigationShell.currentIndex,
+      initialLocation: index == navigationShell.currentIndex,
     );
   }
 

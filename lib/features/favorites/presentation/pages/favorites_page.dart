@@ -18,8 +18,7 @@ class FavoritesPage extends StatelessWidget {
         actions: [
           BlocBuilder<FavoritesCubit, FavoritesState>(
             buildWhen: (previous, current) {
-              return previous.favorites.length !=
-                  current.favorites.length ||
+              return previous.favorites.length != current.favorites.length ||
                   previous.isClearing != current.isClearing;
             },
             builder: (context, state) {
@@ -29,20 +28,16 @@ class FavoritesPage extends StatelessWidget {
 
               return IconButton(
                 tooltip: 'Clear favorites',
-                onPressed: state.isClearing
-                    ? null
-                    : () => _confirmClear(context),
-                icon: state.isClearing
-                    ? const SizedBox(
-                  width: 20,
-                  height: 20,
-                  child: CircularProgressIndicator(
-                    strokeWidth: 2,
-                  ),
-                )
-                    : const Icon(
-                  Icons.delete_sweep_outlined,
-                ),
+                onPressed:
+                    state.isClearing ? null : () => _confirmClear(context),
+                icon:
+                    state.isClearing
+                        ? const SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        )
+                        : const Icon(Icons.delete_sweep_outlined),
               );
             },
           ),
@@ -52,14 +47,11 @@ class FavoritesPage extends StatelessWidget {
       body: SafeArea(
         child: BlocConsumer<FavoritesCubit, FavoritesState>(
           listenWhen: (previous, current) {
-            return previous.errorMessage !=
-                current.errorMessage ||
-                previous.actionMessage !=
-                    current.actionMessage;
+            return previous.errorMessage != current.errorMessage ||
+                previous.actionMessage != current.actionMessage;
           },
           listener: (context, state) {
-            final message =
-                state.errorMessage ?? state.actionMessage;
+            final message = state.errorMessage ?? state.actionMessage;
 
             if (message == null) {
               return;
@@ -67,29 +59,20 @@ class FavoritesPage extends StatelessWidget {
 
             ScaffoldMessenger.of(context)
               ..hideCurrentSnackBar()
-              ..showSnackBar(
-                SnackBar(
-                  content: Text(message),
-                ),
-              );
+              ..showSnackBar(SnackBar(content: Text(message)));
           },
           builder: (context, state) {
             if (state.status == FavoritesStatus.initial ||
                 state.status == FavoritesStatus.loading) {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
+              return const Center(child: CircularProgressIndicator());
             }
 
             if (state.status == FavoritesStatus.failure &&
                 state.favorites.isEmpty) {
               return _FavoritesErrorView(
-                message: state.errorMessage ??
-                    'Failed to load favorites.',
+                message: state.errorMessage ?? 'Failed to load favorites.',
                 onRetry: () {
-                  context
-                      .read<FavoritesCubit>()
-                      .loadFavorites();
+                  context.read<FavoritesCubit>().loadFavorites();
                 },
               );
             }
@@ -99,12 +82,7 @@ class FavoritesPage extends StatelessWidget {
             }
 
             return ListView.separated(
-              padding: const EdgeInsets.fromLTRB(
-                16,
-                16,
-                16,
-                28,
-              ),
+              padding: const EdgeInsets.fromLTRB(16, 16, 16, 28),
               itemCount: state.favorites.length,
               separatorBuilder: (_, __) {
                 return const SizedBox(height: 14);
@@ -115,12 +93,9 @@ class FavoritesPage extends StatelessWidget {
                 return ArticleCard(
                   article: article,
                   isFavorite: true,
-                  isProcessing:
-                  state.isProcessing(article.id),
+                  isProcessing: state.isProcessing(article.id),
                   onFavoriteToggle: () {
-                    context
-                        .read<FavoritesCubit>()
-                        .toggleFavorite(article);
+                    context.read<FavoritesCubit>().toggleFavorite(article);
                   },
                   onTap: () {
                     context.pushNamed(
@@ -137,16 +112,12 @@ class FavoritesPage extends StatelessWidget {
     );
   }
 
-  Future<void> _confirmClear(
-      BuildContext context,
-      ) async {
+  Future<void> _confirmClear(BuildContext context) async {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (dialogContext) {
         return AlertDialog(
-          icon: const Icon(
-            Icons.delete_sweep_outlined,
-          ),
+          icon: const Icon(Icons.delete_sweep_outlined),
           title: const Text('Clear favorites?'),
           content: const Text(
             'All saved articles will be removed from your favorites.',
@@ -170,9 +141,7 @@ class FavoritesPage extends StatelessWidget {
     );
 
     if (confirmed == true && context.mounted) {
-      await context
-          .read<FavoritesCubit>()
-          .clearFavorites();
+      await context.read<FavoritesCubit>().clearFavorites();
     }
   }
 }
@@ -206,17 +175,13 @@ class _EmptyFavoritesView extends StatelessWidget {
             const SizedBox(height: 24),
             Text(
               'No favorites yet',
-              style: Theme.of(context)
-                  .textTheme
-                  .titleLarge,
+              style: Theme.of(context).textTheme.titleLarge,
             ),
             const SizedBox(height: 10),
             Text(
               'Articles you save will appear here.',
               textAlign: TextAlign.center,
-              style: Theme.of(context)
-                  .textTheme
-                  .bodyMedium,
+              style: Theme.of(context).textTheme.bodyMedium,
             ),
             const SizedBox(height: 24),
             FilledButton.icon(
@@ -237,10 +202,7 @@ class _FavoritesErrorView extends StatelessWidget {
   final String message;
   final VoidCallback onRetry;
 
-  const _FavoritesErrorView({
-    required this.message,
-    required this.onRetry,
-  });
+  const _FavoritesErrorView({required this.message, required this.onRetry});
 
   @override
   Widget build(BuildContext context) {
@@ -256,10 +218,7 @@ class _FavoritesErrorView extends StatelessWidget {
               color: Theme.of(context).colorScheme.error,
             ),
             const SizedBox(height: 18),
-            Text(
-              message,
-              textAlign: TextAlign.center,
-            ),
+            Text(message, textAlign: TextAlign.center),
             const SizedBox(height: 20),
             FilledButton.icon(
               onPressed: onRetry,

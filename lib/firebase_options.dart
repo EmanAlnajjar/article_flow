@@ -62,8 +62,10 @@ class DefaultFirebaseOptions {
     messagingSenderId: '776083554780',
     projectId: 'article-eman-2026',
     storageBucket: 'article-eman-2026.firebasestorage.app',
-    androidClientId: '776083554780-i80hm7gq206nlqditr7djqpbg6aadj4j.apps.googleusercontent.com',
-    iosClientId: '776083554780-rkh5oeu9shlb54ta7ojqg95jvj2f5sgi.apps.googleusercontent.com',
+    androidClientId:
+        '776083554780-i80hm7gq206nlqditr7djqpbg6aadj4j.apps.googleusercontent.com',
+    iosClientId:
+        '776083554780-rkh5oeu9shlb54ta7ojqg95jvj2f5sgi.apps.googleusercontent.com',
     iosBundleId: 'com.example.articleFlow',
   );
   static const FirebaseOptions macos = FirebaseOptions(
@@ -72,8 +74,10 @@ class DefaultFirebaseOptions {
     messagingSenderId: '776083554780',
     projectId: 'article-eman-2026',
     storageBucket: 'article-eman-2026.firebasestorage.app',
-    androidClientId: '776083554780-i80hm7gq206nlqditr7djqpbg6aadj4j.apps.googleusercontent.com',
-    iosClientId: '776083554780-rkh5oeu9shlb54ta7ojqg95jvj2f5sgi.apps.googleusercontent.com',
+    androidClientId:
+        '776083554780-i80hm7gq206nlqditr7djqpbg6aadj4j.apps.googleusercontent.com',
+    iosClientId:
+        '776083554780-rkh5oeu9shlb54ta7ojqg95jvj2f5sgi.apps.googleusercontent.com',
     iosBundleId: 'com.example.articleFlow',
   );
 

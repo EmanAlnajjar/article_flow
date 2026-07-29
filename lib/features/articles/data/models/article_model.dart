@@ -1,3 +1,4 @@
+// ignore_for_file: overridden_fields
 import 'package:hive/hive.dart';
 
 import '../../../../core/constants/article_images.dart';

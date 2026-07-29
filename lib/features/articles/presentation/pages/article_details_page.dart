@@ -29,34 +29,32 @@ class ArticleDetailsPage extends StatelessWidget {
                   final processing = state.isProcessing(article.id);
 
                   return IconButton.filledTonal(
-                    tooltip: favorite
-                        ? 'Remove from favorites'
-                        : 'Add to favorites',
-                    onPressed: processing
-                        ? null
-                        : () {
-                      context
-                          .read<FavoritesCubit>()
-                          .toggleFavorite(article);
-                    },
-                    icon: processing
-                        ? const SizedBox(
-                      width: 20,
-                      height: 20,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                      ),
-                    )
-                        : Icon(
-                      favorite
-                          ? Icons.favorite_rounded
-                          : Icons.favorite_border_rounded,
-                      color: favorite
-                          ? Theme.of(context)
-                          .colorScheme
-                          .tertiary
-                          : null,
-                    ),
+                    tooltip:
+                        favorite ? 'Remove from favorites' : 'Add to favorites',
+                    onPressed:
+                        processing
+                            ? null
+                            : () {
+                              context.read<FavoritesCubit>().toggleFavorite(
+                                article,
+                              );
+                            },
+                    icon:
+                        processing
+                            ? const SizedBox(
+                              width: 20,
+                              height: 20,
+                              child: CircularProgressIndicator(strokeWidth: 2),
+                            )
+                            : Icon(
+                              favorite
+                                  ? Icons.favorite_rounded
+                                  : Icons.favorite_border_rounded,
+                              color:
+                                  favorite
+                                      ? Theme.of(context).colorScheme.tertiary
+                                      : null,
+                            ),
                   );
                 },
               ),
