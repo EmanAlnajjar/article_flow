@@ -104,16 +104,12 @@ class _SignInPageState extends State<SignInPage> {
               controller: emailController,
               keyboardType: TextInputType.emailAddress,
               textInputAction: TextInputAction.done,
-              autofillHints: const [
-                AutofillHints.email,
-              ],
+              autofillHints: const [AutofillHints.email],
               validator: AppValidators.email,
               decoration: const InputDecoration(
                 labelText: 'Email address',
                 hintText: 'name@example.com',
-                prefixIcon: Icon(
-                  Icons.email_outlined,
-                ),
+                prefixIcon: Icon(Icons.email_outlined),
               ),
             ),
           ),
@@ -126,16 +122,13 @@ class _SignInPageState extends State<SignInPage> {
             ),
             FilledButton(
               onPressed: () {
-                final isValid =
-                    resetFormKey.currentState?.validate() ?? false;
+                final isValid = resetFormKey.currentState?.validate() ?? false;
 
                 if (!isValid) {
                   return;
                 }
 
-                Navigator.of(dialogContext).pop(
-                  emailController.text.trim(),
-                );
+                Navigator.of(dialogContext).pop(emailController.text.trim());
               },
               child: const Text('Send email'),
             ),
@@ -150,15 +143,10 @@ class _SignInPageState extends State<SignInPage> {
       return;
     }
 
-    await context.read<AuthCubit>().sendPasswordResetEmail(
-      email: email,
-    );
+    await context.read<AuthCubit>().sendPasswordResetEmail(email: email);
   }
 
-  void _showMessage({
-    required String message,
-    required bool isError,
-  }) {
+  void _showMessage({required String message, required bool isError}) {
     final colorScheme = Theme.of(context).colorScheme;
 
     ScaffoldMessenger.of(context)
@@ -166,8 +154,7 @@ class _SignInPageState extends State<SignInPage> {
       ..showSnackBar(
         SnackBar(
           content: Text(message),
-          backgroundColor:
-          isError ? colorScheme.error : colorScheme.primary,
+          backgroundColor: isError ? colorScheme.error : colorScheme.primary,
         ),
       );
   }
@@ -186,29 +173,17 @@ class _SignInPageState extends State<SignInPage> {
             final successMessage = state.successMessage;
 
             if (errorMessage != null) {
-              _showMessage(
-                message: errorMessage,
-                isError: true,
-              );
+              _showMessage(message: errorMessage, isError: true);
             } else if (successMessage != null) {
-              _showMessage(
-                message: successMessage,
-                isError: false,
-              );
+              _showMessage(message: successMessage, isError: false);
             }
           },
           builder: (context, state) {
             final isLoading = state.isLoading;
 
             return SingleChildScrollView(
-              keyboardDismissBehavior:
-              ScrollViewKeyboardDismissBehavior.onDrag,
-              padding: const EdgeInsets.fromLTRB(
-                24,
-                32,
-                24,
-                24,
-              ),
+              keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+              padding: const EdgeInsets.fromLTRB(24, 32, 24, 24),
               child: Form(
                 key: _formKey,
                 child: AutofillGroup(
@@ -222,18 +197,13 @@ class _SignInPageState extends State<SignInPage> {
                           controller: _nameController,
                           enabled: !isLoading,
                           keyboardType: TextInputType.name,
-                          textCapitalization:
-                          TextCapitalization.words,
+                          textCapitalization: TextCapitalization.words,
                           textInputAction: TextInputAction.next,
-                          autofillHints: const [
-                            AutofillHints.name,
-                          ],
+                          autofillHints: const [AutofillHints.name],
                           validator: AppValidators.name,
                           decoration: const InputDecoration(
                             labelText: 'Full name',
-                            prefixIcon: Icon(
-                              Icons.person_outline_rounded,
-                            ),
+                            prefixIcon: Icon(Icons.person_outline_rounded),
                           ),
                         ),
                         const SizedBox(height: 16),
@@ -241,19 +211,14 @@ class _SignInPageState extends State<SignInPage> {
                       TextFormField(
                         controller: _emailController,
                         enabled: !isLoading,
-                        keyboardType:
-                        TextInputType.emailAddress,
+                        keyboardType: TextInputType.emailAddress,
                         textInputAction: TextInputAction.next,
-                        autofillHints: const [
-                          AutofillHints.email,
-                        ],
+                        autofillHints: const [AutofillHints.email],
                         validator: AppValidators.email,
                         decoration: const InputDecoration(
                           labelText: 'Email address',
                           hintText: 'name@example.com',
-                          prefixIcon: Icon(
-                            Icons.email_outlined,
-                          ),
+                          prefixIcon: Icon(Icons.email_outlined),
                         ),
                       ),
                       const SizedBox(height: 16),
@@ -262,18 +227,18 @@ class _SignInPageState extends State<SignInPage> {
                         enabled: !isLoading,
                         obscureText: _obscurePassword,
                         textInputAction:
-                        _isCreatingAccount
-                            ? TextInputAction.next
-                            : TextInputAction.done,
+                            _isCreatingAccount
+                                ? TextInputAction.next
+                                : TextInputAction.done,
                         autofillHints: [
                           _isCreatingAccount
                               ? AutofillHints.newPassword
                               : AutofillHints.password,
                         ],
                         validator:
-                        _isCreatingAccount
-                            ? AppValidators.strongPassword
-                            : AppValidators.password,
+                            _isCreatingAccount
+                                ? AppValidators.strongPassword
+                                : AppValidators.password,
                         onFieldSubmitted: (_) {
                           if (!_isCreatingAccount) {
                             _submit();
@@ -281,18 +246,15 @@ class _SignInPageState extends State<SignInPage> {
                         },
                         decoration: InputDecoration(
                           labelText: 'Password',
-                          prefixIcon: const Icon(
-                            Icons.lock_outline_rounded,
-                          ),
+                          prefixIcon: const Icon(Icons.lock_outline_rounded),
                           suffixIcon: IconButton(
                             tooltip:
-                            _obscurePassword
-                                ? 'Show password'
-                                : 'Hide password',
+                                _obscurePassword
+                                    ? 'Show password'
+                                    : 'Hide password',
                             onPressed: () {
                               setState(() {
-                                _obscurePassword =
-                                !_obscurePassword;
+                                _obscurePassword = !_obscurePassword;
                               });
                             },
                             icon: Icon(
@@ -306,21 +268,15 @@ class _SignInPageState extends State<SignInPage> {
                       if (_isCreatingAccount) ...[
                         const SizedBox(height: 16),
                         TextFormField(
-                          controller:
-                          _confirmPasswordController,
+                          controller: _confirmPasswordController,
                           enabled: !isLoading,
-                          obscureText:
-                          _obscureConfirmPassword,
-                          textInputAction:
-                          TextInputAction.done,
-                          autofillHints: const [
-                            AutofillHints.newPassword,
-                          ],
+                          obscureText: _obscureConfirmPassword,
+                          textInputAction: TextInputAction.done,
+                          autofillHints: const [AutofillHints.newPassword],
                           validator: (value) {
                             return AppValidators.confirmPassword(
                               value: value,
-                              password:
-                              _passwordController.text,
+                              password: _passwordController.text,
                             );
                           },
                           onFieldSubmitted: (_) {
@@ -328,18 +284,16 @@ class _SignInPageState extends State<SignInPage> {
                           },
                           decoration: InputDecoration(
                             labelText: 'Confirm password',
-                            prefixIcon: const Icon(
-                              Icons.lock_reset_rounded,
-                            ),
+                            prefixIcon: const Icon(Icons.lock_reset_rounded),
                             suffixIcon: IconButton(
                               tooltip:
-                              _obscureConfirmPassword
-                                  ? 'Show password'
-                                  : 'Hide password',
+                                  _obscureConfirmPassword
+                                      ? 'Show password'
+                                      : 'Hide password',
                               onPressed: () {
                                 setState(() {
                                   _obscureConfirmPassword =
-                                  !_obscureConfirmPassword;
+                                      !_obscureConfirmPassword;
                                 });
                               },
                               icon: Icon(
@@ -356,12 +310,8 @@ class _SignInPageState extends State<SignInPage> {
                           alignment: Alignment.centerRight,
                           child: TextButton(
                             onPressed:
-                            isLoading
-                                ? null
-                                : _showResetPasswordDialog,
-                            child: const Text(
-                              'Forgot password?',
-                            ),
+                                isLoading ? null : _showResetPasswordDialog,
+                            child: const Text('Forgot password?'),
                           ),
                         )
                       else
@@ -369,23 +319,21 @@ class _SignInPageState extends State<SignInPage> {
                       SizedBox(
                         height: 52,
                         child: FilledButton(
-                          onPressed:
-                          isLoading ? null : _submit,
+                          onPressed: isLoading ? null : _submit,
                           child:
-                          isLoading
-                              ? const SizedBox(
-                            width: 22,
-                            height: 22,
-                            child:
-                            CircularProgressIndicator(
-                              strokeWidth: 2,
-                            ),
-                          )
-                              : Text(
-                            _isCreatingAccount
-                                ? 'Create account'
-                                : 'Sign in',
-                          ),
+                              isLoading
+                                  ? const SizedBox(
+                                    width: 22,
+                                    height: 22,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                    ),
+                                  )
+                                  : Text(
+                                    _isCreatingAccount
+                                        ? 'Create account'
+                                        : 'Sign in',
+                                  ),
                         ),
                       ),
                       const SizedBox(height: 18),
@@ -393,16 +341,10 @@ class _SignInPageState extends State<SignInPage> {
                         children: [
                           const Expanded(child: Divider()),
                           Padding(
-                            padding:
-                            const EdgeInsets.symmetric(
-                              horizontal: 12,
-                            ),
+                            padding: const EdgeInsets.symmetric(horizontal: 12),
                             child: Text(
                               'or continue with',
-                              style:
-                              Theme.of(
-                                context,
-                              ).textTheme.bodySmall,
+                              style: Theme.of(context).textTheme.bodySmall,
                             ),
                           ),
                           const Expanded(child: Divider()),
@@ -413,30 +355,25 @@ class _SignInPageState extends State<SignInPage> {
                         height: 52,
                         child: OutlinedButton.icon(
                           onPressed:
-                          isLoading
-                              ? null
-                              : () {
-                            FocusScope.of(
-                              context,
-                            ).unfocus();
+                              isLoading
+                                  ? null
+                                  : () {
+                                    FocusScope.of(context).unfocus();
 
-                            context
-                                .read<AuthCubit>()
-                                .signInWithGoogle();
-                          },
+                                    context
+                                        .read<AuthCubit>()
+                                        .signInWithGoogle();
+                                  },
                           icon: const Icon(
                             Icons.g_mobiledata_rounded,
                             size: 30,
                           ),
-                          label: const Text(
-                            'Continue with Google',
-                          ),
+                          label: const Text('Continue with Google'),
                         ),
                       ),
                       const SizedBox(height: 18),
                       Row(
-                        mainAxisAlignment:
-                        MainAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Flexible(
                             child: Text(
@@ -446,12 +383,9 @@ class _SignInPageState extends State<SignInPage> {
                             ),
                           ),
                           TextButton(
-                            onPressed:
-                            isLoading ? null : _changeMode,
+                            onPressed: isLoading ? null : _changeMode,
                             child: Text(
-                              _isCreatingAccount
-                                  ? 'Sign in'
-                                  : 'Create account',
+                              _isCreatingAccount ? 'Sign in' : 'Create account',
                             ),
                           ),
                         ],
@@ -460,10 +394,7 @@ class _SignInPageState extends State<SignInPage> {
                       Text(
                         'By continuing, you agree to our Terms of Service and Privacy Policy.',
                         textAlign: TextAlign.center,
-                        style:
-                        Theme.of(
-                          context,
-                        ).textTheme.bodySmall,
+                        style: Theme.of(context).textTheme.bodySmall,
                       ),
                     ],
                   ),
@@ -496,9 +427,7 @@ class _SignInPageState extends State<SignInPage> {
         ),
         const SizedBox(height: 24),
         Text(
-          _isCreatingAccount
-              ? 'Create your account'
-              : 'Welcome to ArticleFlow',
+          _isCreatingAccount ? 'Create your account' : 'Welcome to ArticleFlow',
           textAlign: TextAlign.center,
           style: theme.textTheme.headlineMedium,
         ),

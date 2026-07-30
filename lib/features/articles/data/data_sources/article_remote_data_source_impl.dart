@@ -1,5 +1,6 @@
 import '../../../../core/api/api_client.dart';
 import '../../../../core/api/api_endpoints.dart';
+import '../models/article_model.dart';
 import '../models/article_page_model.dart';
 import 'article_remote_data_source.dart';
 
@@ -18,6 +19,19 @@ class ArticleRemoteDataSourceImpl implements ArticleRemoteDataSource {
       endpoint: ApiEndpoints.posts,
       queryParameters: {'limit': limit, 'skip': skip},
     );
+  }
+
+  @override
+  Future<ArticleModel> getArticleById({required int id}) async {
+    final response = await _apiClient.get('${ApiEndpoints.posts}/$id');
+
+    if (response is! Map) {
+      throw const FormatException('Invalid article response format.');
+    }
+
+    final json = Map<String, dynamic>.from(response);
+
+    return ArticleModel.fromJson(json);
   }
 
   @override

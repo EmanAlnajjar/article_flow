@@ -6,9 +6,11 @@ import '../../app/main_shell_page.dart';
 import '../../features/articles/domain/entities/article_entity.dart';
 import '../../features/articles/presentation/cubit/articles_cubit.dart';
 import '../../features/articles/presentation/pages/article_details_page.dart';
+import '../../features/articles/presentation/pages/article_notification_page.dart';
 import '../../features/articles/presentation/pages/articles_page.dart';
 import '../../features/authentication/presentation/pages/sign_in_page.dart';
 import '../../features/favorites/presentation/pages/favorites_page.dart';
+import '../../features/notifications/ presentation/pages/notifications_page.dart';
 import '../../features/profile/presentation/profile_page.dart';
 import '../di/service_locator.dart';
 
@@ -36,8 +38,14 @@ class AppRouter {
 
   // Article details
   static const String articleDetailsName = 'articleDetails';
-
   static const String articleDetailsPath = '/article-details';
+
+  static const String articleNotificationName = 'articleNotification';
+  static const String articleNotificationPath = '/notification/article/:articleId';
+
+  static const String notificationsName = 'notifications';
+  static const String notificationsPath = '/notifications';
+
 
   static GoRouter create({required String initialLocation}) {
     return GoRouter(
@@ -121,6 +129,36 @@ class AppRouter {
             }
 
             return ArticleDetailsPage(article: article);
+          },
+        ),
+
+        //
+        GoRoute(
+          parentNavigatorKey: _rootNavigatorKey,
+          path: articleNotificationPath,
+          name: articleNotificationName,
+          builder: (context, state) {
+            final value = state.pathParameters['articleId'];
+
+            final articleId = int.tryParse(value ?? '');
+
+            if (articleId == null || articleId <= 0) {
+              return const _RouteErrorPage(
+                message: 'The article ID is invalid.',
+              );
+            }
+
+            return ArticleNotificationPage(articleId: articleId);
+          },
+        ),
+
+        //
+        GoRoute(
+          parentNavigatorKey: _rootNavigatorKey,
+          path: notificationsPath,
+          name: notificationsName,
+          builder: (context, state) {
+            return const NotificationsPage();
           },
         ),
       ],

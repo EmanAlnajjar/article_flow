@@ -5,9 +5,8 @@ import '../data_sources/auth_remote_data_source.dart';
 class AuthRepositoryImpl implements AuthRepository {
   final AuthRemoteDataSource _remoteDataSource;
 
-  const AuthRepositoryImpl({
-    required AuthRemoteDataSource remoteDataSource,
-  }) : _remoteDataSource = remoteDataSource;
+  const AuthRepositoryImpl({required AuthRemoteDataSource remoteDataSource})
+    : _remoteDataSource = remoteDataSource;
 
   @override
   Stream<AuthUserEntity?> get authStateChanges {
@@ -49,12 +48,8 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<void> sendPasswordResetEmail({
-    required String email,
-  }) {
-    return _remoteDataSource.sendPasswordResetEmail(
-      email: email,
-    );
+  Future<void> sendPasswordResetEmail({required String email}) {
+    return _remoteDataSource.sendPasswordResetEmail(email: email);
   }
 
   @override

@@ -17,7 +17,9 @@ class ArticleLocalDataSourceImpl implements ArticleLocalDataSource {
        _metadataBox = metadataBox;
 
   @override
-  bool get hasCachedArticles => _articlesBox.isNotEmpty;
+  bool get hasCachedArticles {
+    return _articlesBox.isNotEmpty;
+  }
 
   @override
   DateTime? get lastUpdate {
@@ -58,12 +60,20 @@ class ArticleLocalDataSourceImpl implements ArticleLocalDataSource {
 
       await _metadataBox.put(HiveService.cachedTotalKey, total);
 
-      await _metadataBox.put(
-        HiveService.lastUpdateKey,
-        DateTime.now().toIso8601String(),
-      );
+      await _saveLastUpdate();
     } catch (_) {
       throw const CacheException(message: 'Failed to cache articles.');
+    }
+  }
+
+  @override
+  Future<void> cacheArticle({required ArticleModel article}) async {
+    try {
+      await _articlesBox.put(article.id, article);
+
+      await _saveLastUpdate();
+    } catch (_) {
+      throw const CacheException(message: 'Failed to cache the article.');
     }
   }
 
@@ -78,6 +88,15 @@ class ArticleLocalDataSourceImpl implements ArticleLocalDataSource {
       return _createPage(articles: articles, limit: limit, skip: skip);
     } catch (_) {
       throw const CacheException(message: 'Failed to read cached articles.');
+    }
+  }
+
+  @override
+  Future<ArticleModel?> getCachedArticleById({required int id}) async {
+    try {
+      return _articlesBox.get(id);
+    } catch (_) {
+      throw const CacheException(message: 'Failed to read the cached article.');
     }
   }
 
@@ -116,6 +135,13 @@ class ArticleLocalDataSourceImpl implements ArticleLocalDataSource {
 
       throw const CacheException(message: 'Failed to search cached articles.');
     }
+  }
+
+  Future<void> _saveLastUpdate() {
+    return _metadataBox.put(
+      HiveService.lastUpdateKey,
+      DateTime.now().toIso8601String(),
+    );
   }
 
   List<ArticleModel> _getSortedArticles() {

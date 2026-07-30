@@ -8,10 +8,14 @@ abstract interface class ArticleLocalDataSource {
     required bool replace,
   });
 
+  Future<void> cacheArticle({required ArticleModel article});
+
   Future<ArticlePageModel> getCachedArticles({
     required int limit,
     required int skip,
   });
+
+  Future<ArticleModel?> getCachedArticleById({required int id});
 
   Future<ArticlePageModel> searchCachedArticles({
     required String query,

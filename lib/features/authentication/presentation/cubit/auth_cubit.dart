@@ -11,12 +11,10 @@ class AuthCubit extends Cubit<AuthState> {
   final WatchAuthStateUseCase _watchAuthStateUseCase;
   final GetCurrentUserUseCase _getCurrentUserUseCase;
   final SignInWithGoogleUseCase _signInWithGoogleUseCase;
-  final SignInWithEmailAndPasswordUseCase
-  _signInWithEmailAndPasswordUseCase;
+  final SignInWithEmailAndPasswordUseCase _signInWithEmailAndPasswordUseCase;
   final CreateUserWithEmailAndPasswordUseCase
   _createUserWithEmailAndPasswordUseCase;
-  final SendPasswordResetEmailUseCase
-  _sendPasswordResetEmailUseCase;
+  final SendPasswordResetEmailUseCase _sendPasswordResetEmailUseCase;
   final SignOutUseCase _signOutUseCase;
 
   StreamSubscription<AuthUserEntity?>? _authSubscription;
@@ -29,20 +27,17 @@ class AuthCubit extends Cubit<AuthState> {
     signInWithEmailAndPasswordUseCase,
     required CreateUserWithEmailAndPasswordUseCase
     createUserWithEmailAndPasswordUseCase,
-    required SendPasswordResetEmailUseCase
-    sendPasswordResetEmailUseCase,
+    required SendPasswordResetEmailUseCase sendPasswordResetEmailUseCase,
     required SignOutUseCase signOutUseCase,
   }) : _watchAuthStateUseCase = watchAuthStateUseCase,
-        _getCurrentUserUseCase = getCurrentUserUseCase,
-        _signInWithGoogleUseCase = signInWithGoogleUseCase,
-        _signInWithEmailAndPasswordUseCase =
-            signInWithEmailAndPasswordUseCase,
-        _createUserWithEmailAndPasswordUseCase =
-            createUserWithEmailAndPasswordUseCase,
-        _sendPasswordResetEmailUseCase =
-            sendPasswordResetEmailUseCase,
-        _signOutUseCase = signOutUseCase,
-        super(const AuthState()) {
+       _getCurrentUserUseCase = getCurrentUserUseCase,
+       _signInWithGoogleUseCase = signInWithGoogleUseCase,
+       _signInWithEmailAndPasswordUseCase = signInWithEmailAndPasswordUseCase,
+       _createUserWithEmailAndPasswordUseCase =
+           createUserWithEmailAndPasswordUseCase,
+       _sendPasswordResetEmailUseCase = sendPasswordResetEmailUseCase,
+       _signOutUseCase = signOutUseCase,
+       super(const AuthState()) {
     _startWatchingAuthState();
   }
 
@@ -50,12 +45,7 @@ class AuthCubit extends Cubit<AuthState> {
     final currentUser = _getCurrentUserUseCase();
 
     if (currentUser != null) {
-      emit(
-        AuthState(
-          status: AuthStatus.authenticated,
-          user: currentUser,
-        ),
-      );
+      emit(AuthState(status: AuthStatus.authenticated, user: currentUser));
     }
 
     _authSubscription = _watchAuthStateUseCase().listen(
@@ -82,20 +72,11 @@ class AuthCubit extends Cubit<AuthState> {
     }
 
     if (user == null) {
-      emit(
-        const AuthState(
-          status: AuthStatus.unauthenticated,
-        ),
-      );
+      emit(const AuthState(status: AuthStatus.unauthenticated));
       return;
     }
 
-    emit(
-      AuthState(
-        status: AuthStatus.authenticated,
-        user: user,
-      ),
-    );
+    emit(AuthState(status: AuthStatus.authenticated, user: user));
   }
 
   Future<void> signInWithGoogle() async {
@@ -160,9 +141,7 @@ class AuthCubit extends Cubit<AuthState> {
     }
   }
 
-  Future<void> sendPasswordResetEmail({
-    required String email,
-  }) async {
+  Future<void> sendPasswordResetEmail({required String email}) async {
     if (state.isLoading) {
       return;
     }
@@ -170,9 +149,7 @@ class AuthCubit extends Cubit<AuthState> {
     _emitLoading();
 
     try {
-      await _sendPasswordResetEmailUseCase(
-        email: email,
-      );
+      await _sendPasswordResetEmailUseCase(email: email);
 
       if (isClosed) {
         return;
@@ -182,7 +159,7 @@ class AuthCubit extends Cubit<AuthState> {
         const AuthState(
           status: AuthStatus.unauthenticated,
           successMessage:
-          'Password reset instructions were sent to your email.',
+              'Password reset instructions were sent to your email.',
         ),
       );
     } catch (exception) {
@@ -206,11 +183,7 @@ class AuthCubit extends Cubit<AuthState> {
         return;
       }
 
-      emit(
-        const AuthState(
-          status: AuthStatus.unauthenticated,
-        ),
-      );
+      emit(const AuthState(status: AuthStatus.unauthenticated));
     } catch (exception) {
       if (isClosed) {
         return;
@@ -231,12 +204,7 @@ class AuthCubit extends Cubit<AuthState> {
       return;
     }
 
-    emit(
-      state.copyWith(
-        clearError: true,
-        clearSuccess: true,
-      ),
-    );
+    emit(state.copyWith(clearError: true, clearSuccess: true));
   }
 
   void _emitLoading() {
@@ -254,12 +222,7 @@ class AuthCubit extends Cubit<AuthState> {
       return;
     }
 
-    emit(
-      AuthState(
-        status: AuthStatus.authenticated,
-        user: user,
-      ),
-    );
+    emit(AuthState(status: AuthStatus.authenticated, user: user));
   }
 
   void _emitFailure(Object exception) {

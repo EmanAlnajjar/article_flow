@@ -34,9 +34,7 @@ class SignInWithGoogleUseCase {
 class SignInWithEmailAndPasswordUseCase {
   final AuthRepository _repository;
 
-  const SignInWithEmailAndPasswordUseCase(
-      this._repository,
-      );
+  const SignInWithEmailAndPasswordUseCase(this._repository);
 
   Future<AuthUserEntity> call({
     required String email,
@@ -52,9 +50,7 @@ class SignInWithEmailAndPasswordUseCase {
 class CreateUserWithEmailAndPasswordUseCase {
   final AuthRepository _repository;
 
-  const CreateUserWithEmailAndPasswordUseCase(
-      this._repository,
-      );
+  const CreateUserWithEmailAndPasswordUseCase(this._repository);
 
   Future<AuthUserEntity> call({
     required String name,
@@ -72,16 +68,10 @@ class CreateUserWithEmailAndPasswordUseCase {
 class SendPasswordResetEmailUseCase {
   final AuthRepository _repository;
 
-  const SendPasswordResetEmailUseCase(
-      this._repository,
-      );
+  const SendPasswordResetEmailUseCase(this._repository);
 
-  Future<void> call({
-    required String email,
-  }) {
-    return _repository.sendPasswordResetEmail(
-      email: email,
-    );
+  Future<void> call({required String email}) {
+    return _repository.sendPasswordResetEmail(email: email);
   }
 }
 

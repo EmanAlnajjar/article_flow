@@ -4,8 +4,8 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../core/routing/app_router.dart';
 import '../../domain/entities/notification_entity.dart';
-import '../cubite/notifications_cubit.dart';
-import '../cubite/notifications_state.dart';
+import '../cubit/notifications_cubit.dart';
+import '../cubit/notifications_state.dart';
 
 class NotificationsPage extends StatefulWidget {
   const NotificationsPage({super.key});

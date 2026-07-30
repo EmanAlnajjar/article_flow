@@ -1,3 +1,4 @@
+import '../entities/article_entity.dart';
 import '../entities/article_page_entity.dart';
 
 abstract interface class ArticleRepository {
@@ -5,6 +6,8 @@ abstract interface class ArticleRepository {
     required int limit,
     required int skip,
   });
+
+  Future<ArticleEntity> getArticleById({required int id});
 
   Future<ArticlePageEntity> searchArticles({
     required String query,

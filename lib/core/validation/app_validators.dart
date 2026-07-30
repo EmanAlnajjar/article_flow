@@ -2,9 +2,9 @@ class AppValidators {
   AppValidators._();
 
   static String? requiredField(
-      String? value, {
-        String fieldName = 'This field',
-      }) {
+    String? value, {
+    String fieldName = 'This field',
+  }) {
     if (value == null || value.trim().isEmpty) {
       return '$fieldName is required.';
     }
@@ -13,10 +13,7 @@ class AppValidators {
   }
 
   static String? name(String? value) {
-    final requiredError = requiredField(
-      value,
-      fieldName: 'Name',
-    );
+    final requiredError = requiredField(value, fieldName: 'Name');
 
     if (requiredError != null) {
       return requiredError;
@@ -36,10 +33,7 @@ class AppValidators {
   }
 
   static String? email(String? value) {
-    final requiredError = requiredField(
-      value,
-      fieldName: 'Email',
-    );
+    final requiredError = requiredField(value, fieldName: 'Email');
 
     if (requiredError != null) {
       return requiredError;
@@ -48,7 +42,8 @@ class AppValidators {
     final normalizedEmail = value!.trim();
 
     final emailPattern = RegExp(
-      r'^[A-Za-z0-9.!#$%&''*+/=?^_`{|}~-]+'
+      r'^[A-Za-z0-9.!#$%&'
+      '*+/=?^_`{|}~-]+'
       r'@[A-Za-z0-9-]+'
       r'(?:\.[A-Za-z0-9-]+)+$',
     );
@@ -61,10 +56,7 @@ class AppValidators {
   }
 
   static String? password(String? value) {
-    final requiredError = requiredField(
-      value,
-      fieldName: 'Password',
-    );
+    final requiredError = requiredField(value, fieldName: 'Password');
 
     if (requiredError != null) {
       return requiredError;
@@ -103,10 +95,7 @@ class AppValidators {
     required String? value,
     required String password,
   }) {
-    final requiredError = requiredField(
-      value,
-      fieldName: 'Confirm password',
-    );
+    final requiredError = requiredField(value, fieldName: 'Confirm password');
 
     if (requiredError != null) {
       return requiredError;

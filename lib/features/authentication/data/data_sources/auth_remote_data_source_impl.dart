@@ -5,8 +5,7 @@ import '../../../../core/errors/app_exception.dart';
 import '../models/auth_user_model.dart';
 import 'auth_remote_data_source.dart';
 
-class AuthRemoteDataSourceImpl
-    implements AuthRemoteDataSource {
+class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   final FirebaseAuth _firebaseAuth;
   final GoogleSignIn _googleSignIn;
 
@@ -16,7 +15,7 @@ class AuthRemoteDataSourceImpl
     required FirebaseAuth firebaseAuth,
     required GoogleSignIn googleSignIn,
   }) : _firebaseAuth = firebaseAuth,
-        _googleSignIn = googleSignIn {
+       _googleSignIn = googleSignIn {
     _googleInitialization = _googleSignIn.initialize();
   }
 
@@ -47,49 +46,37 @@ class AuthRemoteDataSourceImpl
     try {
       await _googleInitialization;
 
-      final googleUser =
-      await _googleSignIn.authenticate();
+      final googleUser = await _googleSignIn.authenticate();
 
-      final googleAuthentication =
-          googleUser.authentication;
+      final googleAuthentication = googleUser.authentication;
 
       final credential = GoogleAuthProvider.credential(
         idToken: googleAuthentication.idToken,
       );
 
-      final userCredential =
-      await _firebaseAuth.signInWithCredential(
+      final userCredential = await _firebaseAuth.signInWithCredential(
         credential,
       );
 
       return _getUserOrThrow(
         userCredential,
-        message:
-        'Google Sign-In did not return a user.',
+        message: 'Google Sign-In did not return a user.',
       );
     } on GoogleSignInException catch (exception) {
-      if (exception.code ==
-          GoogleSignInExceptionCode.canceled) {
-        throw const AppException(
-          message: 'Google Sign-In was cancelled.',
-        );
+      if (exception.code == GoogleSignInExceptionCode.canceled) {
+        throw const AppException(message: 'Google Sign-In was cancelled.');
       }
 
       throw AppException(
-        message:
-        exception.description ??
-            'Google Sign-In failed.',
+        message: exception.description ?? 'Google Sign-In failed.',
       );
     } on FirebaseAuthException catch (exception) {
-      throw AppException(
-        message: _mapFirebaseError(exception),
-      );
+      throw AppException(message: _mapFirebaseError(exception));
     } on AppException {
       rethrow;
     } catch (_) {
       throw const AppException(
-        message:
-        'Unable to sign in with Google. Please try again.',
+        message: 'Unable to sign in with Google. Please try again.',
       );
     }
   }
@@ -100,8 +87,7 @@ class AuthRemoteDataSourceImpl
     required String password,
   }) async {
     try {
-      final userCredential = await _firebaseAuth
-          .signInWithEmailAndPassword(
+      final userCredential = await _firebaseAuth.signInWithEmailAndPassword(
         email: email.trim(),
         password: password,
       );
@@ -111,28 +97,22 @@ class AuthRemoteDataSourceImpl
         message: 'Sign-in did not return a user.',
       );
     } on FirebaseAuthException catch (exception) {
-      throw AppException(
-        message: _mapFirebaseError(exception),
-      );
+      throw AppException(message: _mapFirebaseError(exception));
     } on AppException {
       rethrow;
     } catch (_) {
-      throw const AppException(
-        message: 'Unable to sign in. Please try again.',
-      );
+      throw const AppException(message: 'Unable to sign in. Please try again.');
     }
   }
 
   @override
-  Future<AuthUserModel>
-  createUserWithEmailAndPassword({
+  Future<AuthUserModel> createUserWithEmailAndPassword({
     required String name,
     required String email,
     required String password,
   }) async {
     try {
-      final userCredential = await _firebaseAuth
-          .createUserWithEmailAndPassword(
+      final userCredential = await _firebaseAuth.createUserWithEmailAndPassword(
         email: email.trim(),
         password: password,
       );
@@ -141,8 +121,7 @@ class AuthRemoteDataSourceImpl
 
       if (user == null) {
         throw const AppException(
-          message:
-          'Account creation did not return a user.',
+          message: 'Account creation did not return a user.',
         );
       }
 
@@ -153,44 +132,31 @@ class AuthRemoteDataSourceImpl
 
       if (updatedUser == null) {
         throw const AppException(
-          message:
-          'Unable to load the created account.',
+          message: 'Unable to load the created account.',
         );
       }
 
-      return AuthUserModel.fromFirebaseUser(
-        updatedUser,
-      );
+      return AuthUserModel.fromFirebaseUser(updatedUser);
     } on FirebaseAuthException catch (exception) {
-      throw AppException(
-        message: _mapFirebaseError(exception),
-      );
+      throw AppException(message: _mapFirebaseError(exception));
     } on AppException {
       rethrow;
     } catch (_) {
       throw const AppException(
-        message:
-        'Unable to create the account. Please try again.',
+        message: 'Unable to create the account. Please try again.',
       );
     }
   }
 
   @override
-  Future<void> sendPasswordResetEmail({
-    required String email,
-  }) async {
+  Future<void> sendPasswordResetEmail({required String email}) async {
     try {
-      await _firebaseAuth.sendPasswordResetEmail(
-        email: email.trim(),
-      );
+      await _firebaseAuth.sendPasswordResetEmail(email: email.trim());
     } on FirebaseAuthException catch (exception) {
-      throw AppException(
-        message: _mapFirebaseError(exception),
-      );
+      throw AppException(message: _mapFirebaseError(exception));
     } catch (_) {
       throw const AppException(
-        message:
-        'Unable to send the reset email. Please try again.',
+        message: 'Unable to send the reset email. Please try again.',
       );
     }
   }
@@ -203,21 +169,18 @@ class AuthRemoteDataSourceImpl
       await _firebaseAuth.signOut();
       await _googleSignIn.signOut();
     } on FirebaseAuthException catch (exception) {
-      throw AppException(
-        message: _mapFirebaseError(exception),
-      );
+      throw AppException(message: _mapFirebaseError(exception));
     } catch (_) {
       throw const AppException(
-        message:
-        'Unable to sign out. Please try again.',
+        message: 'Unable to sign out. Please try again.',
       );
     }
   }
 
   AuthUserModel _getUserOrThrow(
-      UserCredential userCredential, {
-        required String message,
-      }) {
+    UserCredential userCredential, {
+    required String message,
+  }) {
     final user = userCredential.user;
 
     if (user == null) {
@@ -227,33 +190,22 @@ class AuthRemoteDataSourceImpl
     return AuthUserModel.fromFirebaseUser(user);
   }
 
-  String _mapFirebaseError(
-      FirebaseAuthException exception,
-      ) {
+  String _mapFirebaseError(FirebaseAuthException exception) {
     return switch (exception.code) {
       'account-exists-with-different-credential' =>
-      'An account already exists with a different sign-in method.',
+        'An account already exists with a different sign-in method.',
       'email-already-in-use' =>
-      'An account already exists for this email address.',
-      'invalid-email' =>
-      'Please enter a valid email address.',
+        'An account already exists for this email address.',
+      'invalid-email' => 'Please enter a valid email address.',
       'invalid-credential' ||
       'wrong-password' ||
-      'user-not-found' =>
-      'The email or password is incorrect.',
-      'weak-password' =>
-      'The password must contain at least 6 characters.',
-      'operation-not-allowed' =>
-      'This sign-in method is not enabled.',
-      'user-disabled' =>
-      'This user account has been disabled.',
-      'too-many-requests' =>
-      'Too many attempts. Please try again later.',
-      'network-request-failed' =>
-      'No internet connection.',
-      _ =>
-      exception.message ??
-          'Authentication failed. Please try again.',
+      'user-not-found' => 'The email or password is incorrect.',
+      'weak-password' => 'The password must contain at least 6 characters.',
+      'operation-not-allowed' => 'This sign-in method is not enabled.',
+      'user-disabled' => 'This user account has been disabled.',
+      'too-many-requests' => 'Too many attempts. Please try again later.',
+      'network-request-failed' => 'No internet connection.',
+      _ => exception.message ?? 'Authentication failed. Please try again.',
     };
   }
 }
